@@ -1,0 +1,2623 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Crusher - Inventaris Barang</title>
+  <!-- QR Code Libraries (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --primary-light: #dbeafe;
+      --success: #10b981;
+      --success-light: #d1fae5;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --danger: #ef4444;
+      --danger-light: #fee2e2;
+      --bg: #f1f5f9;
+      --sidebar: #0f172a;
+      --card: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --input-bg: #ffffff;
+      --topbar-bg: #ffffff;
+      --table-header: #f8fafc;
+      --hover-bg: #f8fafc;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+    }
+
+    [data-theme="dark"] {
+      --primary: #60a5fa;
+      --primary-dark: #3b82f6;
+      --primary-light: #1e3a5f;
+      --success: #34d399;
+      --success-light: #064e3b;
+      --warning: #fbbf24;
+      --warning-light: #78350f;
+      --danger: #f87171;
+      --danger-light: #7f1d1d;
+      --bg: #0f172a;
+      --sidebar: #020617;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --input-bg: #0f172a;
+      --topbar-bg: #1e293b;
+      --table-header: #0f172a;
+      --hover-bg: #334155;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      overflow-x: hidden;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    /* ========== LOGIN ========== */
+    #login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      padding: 20px;
+    }
+
+    .login-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+      animation: fadeUp 0.5s ease;
+      border: 1px solid #e2e8f0;
+      color: #1e293b;
+    }
+
+    .login-card h2,
+    .login-card .form-group label {
+      color: #1e293b;
+    }
+
+    .login-card .form-group input {
+      background: #ffffff;
+      color: #1e293b;
+      border-color: #e2e8f0;
+    }
+
+    .login-logo h1 {
+      color: #1e293b !important;
+    }
+
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      justify-content: center;
+    }
+
+    .login-logo .icon {
+      width: 48px;
+      height: 48px;
+      background: var(--primary);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-logo h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .login-logo span {
+      color: var(--primary);
+    }
+
+    .login-card h2 {
+      font-size: 20px;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    .login-card p.sub {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 7px;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: var(--input-bg);
+      color: var(--text);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .form-group select option {
+      background: var(--card);
+      color: var(--text);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-outline:hover {
+      background: var(--hover-bg);
+      border-color: var(--border);
+    }
+
+    .btn-sm {
+      padding: 7px 14px;
+      font-size: 13px;
+      border-radius: 8px;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .login-hint {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: #f8fafc;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* ========== APP LAYOUT ========== */
+    #app {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 240px;
+      background: var(--sidebar);
+      color: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-header {
+      padding: 20px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .sidebar-header .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .sidebar-header span {
+      color: #93c5fd;
+      font-size: 12px;
+      display: block;
+      margin-top: 1px;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 12px;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .nav-item:hover {
+      background: #1e293b;
+      color: #e2e8f0;
+    }
+
+    .nav-item.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid #1e293b;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .user-info:hover {
+      background: #1e293b;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: white;
+      font-size: 14px;
+    }
+
+    .user-info .name {
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .user-info .role {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    /* Main Content */
+    .main {
+      margin-left: 240px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      background: var(--topbar-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 1px 3px rgb(0 0 0 / 0.04);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      color: var(--text);
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+      color: var(--text-muted);
+    }
+
+    .icon-btn:hover {
+      background: var(--hover-bg);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .badge-notif {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: var(--danger);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .content {
+      padding: 24px 28px;
+      flex: 1;
+    }
+
+    /* Cards & Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card .stat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .stat-card .stat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-card .stat-icon.blue { background: var(--primary-light); color: var(--primary); }
+    .stat-card .stat-icon.green { background: var(--success-light); color: var(--success); }
+    .stat-card .stat-icon.orange { background: var(--warning-light); color: var(--warning); }
+    .stat-card .stat-icon.red { background: var(--danger-light); color: var(--danger); }
+
+    .stat-card .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .stat-card .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .stat-card .stat-change {
+      font-size: 12px;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stat-change.up { color: var(--success); }
+    .stat-change.down { color: var(--danger); }
+
+    /* Panel / Card */
+    .panel {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .panel-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .panel-body {
+      padding: 0;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 14px 10px 40px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      background: var(--input-bg);
+      color: var(--text);
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: var(--input-bg);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 18px;
+      height: 18px;
+    }
+
+    .filter-select {
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: inherit;
+      cursor: pointer;
+      min-width: 140px;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .filter-select option {
+      background: var(--card);
+      color: var(--text);
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead {
+      background: var(--table-header);
+    }
+
+    th {
+      text-align: left;
+      padding: 13px 16px;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tbody tr {
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: var(--hover-bg);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .item-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .item-sku {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-success { background: var(--success-light); color: #065f46; }
+    .badge-warning { background: var(--warning-light); color: #92400e; }
+    .badge-danger { background: var(--danger-light); color: #991b1b; }
+    .badge-info { background: var(--primary-light); color: #1e40af; }
+    .badge-gray { background: var(--hover-bg); color: var(--text-muted); }
+
+    [data-theme="dark"] .badge-info {
+      background: #1e3a5f;
+      color: #93c5fd;
+    }
+    [data-theme="dark"] .badge-success {
+      background: #064e3b;
+      color: #6ee7b7;
+    }
+    [data-theme="dark"] .badge-warning {
+      background: #78350f;
+      color: #fcd34d;
+    }
+    [data-theme="dark"] .badge-danger {
+      background: #7f1d1d;
+      color: #fca5a5;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .action-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-muted);
+    }
+
+    .action-btn:hover {
+      background: var(--hover-bg);
+      color: var(--text);
+    }
+
+    .action-btn.view:hover { color: var(--primary); border-color: var(--primary-light); background: var(--primary-light); }
+    .action-btn.edit:hover { color: var(--warning); border-color: var(--warning-light); background: var(--warning-light); }
+    .action-btn.delete:hover { color: var(--danger); border-color: var(--danger-light); background: var(--danger-light); }
+    .action-btn.qr:hover { color: #a78bfa; border-color: #4c1d95; background: #2e1065; }
+
+    [data-theme="dark"] .action-btn.qr:hover {
+      color: #c4b5fd;
+      border-color: #5b21b6;
+      background: #4c1d95;
+    }
+
+    [data-theme="light"] .action-btn.qr:hover,
+    :root .action-btn.qr:hover {
+      color: #7c3aed;
+      border-color: #ede9fe;
+      background: #ede9fe;
+    }
+
+    /* QR & Scanner */
+    .qr-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 0;
+    }
+    .qr-display canvas, .qr-display img {
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      max-width: 100%;
+    }
+    .qr-info {
+      text-align: center;
+      font-size: 14px;
+    }
+    .qr-info strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .qr-info span {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    #qr-reader {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    #qr-reader video {
+      border-radius: 12px !important;
+    }
+    .scanner-hint {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 14px;
+      padding: 0 10px;
+    }
+    .scanner-status {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 10px;
+      color: var(--primary);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      opacity: 0.4;
+    }
+
+    .empty-state h4 {
+      font-size: 16px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s ease;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--card);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+      transform: translateY(20px) scale(0.98);
+      transition: transform 0.25s ease;
+      border: 1px solid var(--border);
+    }
+
+    .modal-overlay.show .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: none;
+      background: var(--bg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 500px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 14px 18px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 280px;
+      max-width: 360px;
+      border-left: 4px solid var(--primary);
+      animation: slideIn 0.3s ease;
+      border: 1px solid var(--border);
+    }
+
+    .toast.success { border-left-color: var(--success); }
+    .toast.error { border-left-color: var(--danger); }
+    .toast.warning { border-left-color: var(--warning); }
+
+    .toast-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .toast.success .toast-icon { background: var(--success-light); color: var(--success); }
+    .toast.error .toast-icon { background: var(--danger-light); color: var(--danger); }
+    .toast.warning .toast-icon { background: var(--warning-light); color: var(--warning); }
+    .toast.info .toast-icon { background: var(--primary-light); color: var(--primary); }
+
+    .toast-content {
+      flex: 1;
+    }
+
+    .toast-content strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .toast-content span {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 4px;
+    }
+
+    /* Detail View */
+    .detail-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .detail-item:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .detail-value {
+      font-size: 14px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    /* Settings */
+    .settings-section {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .settings-section:last-child {
+      border-bottom: none;
+    }
+
+    .settings-section h4 {
+      font-size: 15px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+    }
+
+    .setting-row label {
+      font-size: 14px;
+    }
+
+    .toggle {
+      position: relative;
+      width: 48px;
+      height: 26px;
+      background: #cbd5e1;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .toggle.active {
+      background: var(--primary);
+    }
+
+    .toggle::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .toggle.active::after {
+      transform: translateX(22px);
+    }
+
+    /* Notif Panel */
+    .notif-panel {
+      position: absolute;
+      top: 52px;
+      right: 0;
+      width: 340px;
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      z-index: 60;
+      display: none;
+      overflow: hidden;
+    }
+
+    .notif-panel.show {
+      display: block;
+      animation: fadeUp 0.2s ease;
+    }
+
+    .notif-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .notif-header h4 {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .notif-list {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .notif-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .notif-item:hover {
+      background: var(--hover-bg);
+    }
+
+    .notif-item.unread {
+      background: var(--primary-light);
+    }
+
+    .notif-item .notif-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .notif-item .notif-text {
+      flex: 1;
+    }
+
+    .notif-item .notif-text strong {
+      font-size: 13px;
+      display: block;
+    }
+
+    .notif-item .notif-text span {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .notif-item .notif-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Dashboard recent */
+    .recent-list {
+      padding: 8px 0;
+    }
+
+    .recent-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 20px;
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+
+    .recent-item:hover {
+      background: var(--hover-bg);
+    }
+
+    .recent-item .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .recent-item .info {
+      flex: 1;
+    }
+
+    .recent-item .info strong {
+      font-size: 14px;
+      display: block;
+    }
+
+    .recent-item .info span {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .recent-item .qty {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .main {
+        margin-left: 0;
+      }
+      .menu-toggle {
+        display: flex;
+      }
+      .content {
+        padding: 16px;
+      }
+      .topbar {
+        padding: 12px 16px;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .search-box {
+        min-width: 100%;
+      }
+    }
+
+    /* Overlay for mobile sidebar */
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 99;
+      display: none;
+    }
+
+    .sidebar-overlay.show {
+      display: block;
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .page-section {
+      display: none;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    /* Quantity badge */
+    .qty-badge {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .qty-low {
+      color: var(--danger);
+    }
+
+    .qty-ok {
+      color: var(--success);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== LOGIN PAGE ==================== -->
+  <div id="login-page">
+    <div class="login-card">
+      <div class="login-logo">
+        <div>
+          <h1>Crusher</h1>
+        </div>
+      </div>
+      <h2>Selamat Datang</h2>
+      <p class="sub">Masuk untuk mengelola inventaris barang</p>
+      <form id="login-form">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="login-user" placeholder="admin" required autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-pass" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/>
+            <line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+          Masuk
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== APP ==================== -->
+  <div id="app">
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div>
+          <h2>Crusher</h2>
+          <span>Inventaris Barang</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-page="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+          Dashboard
+        </button>
+        <button class="nav-item" data-page="inventory">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+          Inventaris
+        </button>
+        <button class="nav-item" data-page="notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          Notifikasi
+        </button>
+        <button class="nav-item" data-page="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          Pengaturan
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info" id="logout-btn" title="Keluar">
+          <div class="user-avatar">A</div>
+          <div>
+            <div class="name">Admin</div>
+            <div class="role">Administrator</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menu-toggle">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+          <h1 class="page-title" id="page-title">Dashboard</h1>
+        </div>
+        <div class="topbar-right">
+          <div style="position: relative;">
+            <button class="icon-btn" id="notif-btn" title="Notifikasi">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+              <span class="badge-notif" id="notif-badge">0</span>
+            </button>
+            <div class="notif-panel" id="notif-panel">
+              <div class="notif-header">
+                <h4>Notifikasi</h4>
+                <button class="btn btn-sm btn-outline" id="clear-notif">Hapus semua</button>
+              </div>
+              <div class="notif-list" id="notif-list"></div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" id="btn-scan-qr" title="Scan QR Code">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/><path d="M14 14h.01"/><path d="M17 14h.01"/><path d="M14 17h.01"/><path d="M21 14h.01"/><path d="M21 17h.01"/><path d="M14 21h.01"/><path d="M17 21h.01"/><path d="M21 21h.01"/>
+            </svg>
+            Scan QR
+          </button>
+          <button class="btn btn-primary btn-sm" id="btn-add-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Tambah Barang
+          </button>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- DASHBOARD -->
+        <section class="page-section active" id="page-dashboard">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <div>
+                  <div class="stat-value" id="stat-total">0</div>
+                  <div class="stat-label">Total Barang</div>
+                </div>
+                <div class="stat-icon blue">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="stat-change up" id="stat-total-change">+0 hari ini</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <div>
+                  <div class="stat-value" id="stat-stock">0</div>
+                  <div class="stat-label">Total Stok</div>
+                </div>
+                <div class="stat-icon green">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="stat-change up">Unit tersedia</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <div>
+                  <div class="stat-value" id="stat-low">0</div>
+                  <div class="stat-label">Stok Rendah</div>
+                </div>
+                <div class="stat-icon orange">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="stat-change down">Perlu restock</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-header">
+                <div>
+                  <div class="stat-value" id="stat-value">Rp 0</div>
+                  <div class="stat-label">Nilai Inventaris</div>
+                </div>
+                <div class="stat-icon red">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="6" width="20" height="12" rx="2"/>
+                    <circle cx="12" cy="12" r="2"/>
+                    <path d="M6 12h.01M18 12h.01"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="stat-change up">Total aset</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Barang Terbaru</h3>
+              <button class="btn btn-outline btn-sm" onclick="navigateTo('inventory')">Lihat Semua</button>
+            </div>
+            <div class="panel-body">
+              <div class="recent-list" id="recent-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- INVENTORY LIST -->
+        <section class="page-section" id="page-inventory">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Daftar Inventaris</h3>
+              <div class="toolbar">
+                <div class="search-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input type="text" id="search-input" placeholder="Cari barang, SKU, kategori..." />
+                </div>
+                <select class="filter-select" id="filter-category">
+                  <option value="">Semua Kategori</option>
+                </select>
+                <select class="filter-select" id="filter-status">
+                  <option value="">Semua Status</option>
+                  <option value="Tersedia">Tersedia</option>
+                  <option value="Stok Rendah">Stok Rendah</option>
+                  <option value="Habis">Habis</option>
+                </select>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Barang</th>
+                      <th>Kategori</th>
+                      <th>Stok</th>
+                      <th>Harga</th>
+                      <th>Status</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="inventory-tbody"></tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="empty-state" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                </svg>
+                <h4>Belum ada barang</h4>
+                <p>Klik "Tambah Barang" untuk menambahkan inventaris pertama Anda.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- NOTIFICATIONS PAGE -->
+        <section class="page-section" id="page-notifications">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Semua Notifikasi</h3>
+              <button class="btn btn-outline btn-sm" id="clear-all-notif-page">Hapus Semua</button>
+            </div>
+            <div class="panel-body">
+              <div id="notif-page-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="page-section" id="page-settings">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Pengaturan</h3>
+            </div>
+            <div class="settings-section">
+              <h4>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Tampilan
+              </h4>
+              <div class="setting-row">
+                <label>Mode Gelap</label>
+                <div class="toggle" id="toggle-dark"></div>
+              </div>
+              <div class="setting-row">
+                <label>Notifikasi Toast</label>
+                <div class="toggle active" id="toggle-toast"></div>
+              </div>
+            </div>
+            <div class="settings-section">
+              <h4>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                Data
+              </h4>
+              <div class="setting-row">
+                <label>Reset semua data inventaris</label>
+                <button class="btn btn-danger btn-sm" id="btn-reset-data">Reset Data</button>
+              </div>
+              <div class="setting-row">
+                <label>Export data (JSON)</label>
+                <button class="btn btn-outline btn-sm" id="btn-export">Export</button>
+              </div>
+            </div>
+            <div class="settings-section">
+              <h4>Tentang</h4>
+              <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">
+                <strong>Crusher</strong> v1.0 — Aplikasi Inventaris Barang<br>
+                Dibuat untuk Acode & Termux. Data disimpan di LocalStorage browser.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Form (Create / Update) -->
+  <div class="modal-overlay" id="modal-form">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Tambah Barang</h3>
+        <button class="modal-close" id="modal-close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <form id="item-form">
+        <div class="modal-body">
+          <input type="hidden" id="item-id" />
+          <div class="form-group">
+            <label>Nama Barang *</label>
+            <input type="text" id="item-name" required placeholder="Contoh: Laptop Asus ROG" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>SKU / Kode</label>
+              <input type="text" id="item-sku" placeholder="Contoh: ITM-001" />
+            </div>
+            <div class="form-group">
+              <label>Kategori *</label>
+              <select id="item-category" required>
+                <option value="">Pilih kategori</option>
+                <option value="Elektronik">Elektronik</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Alat Tulis">Alat Tulis</option>
+                <option value="Pakaian">Pakaian</option>
+                <option value="Makanan">Makanan</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Jumlah Stok *</label>
+              <input type="number" id="item-qty" required min="0" placeholder="0" />
+            </div>
+            <div class="form-group">
+              <label>Harga (Rp) *</label>
+              <input type="number" id="item-price" required min="0" placeholder="0" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Lokasi / Gudang</label>
+            <input type="text" id="item-location" placeholder="Contoh: Gudang A - Rak 3" />
+          </div>
+          <div class="form-group">
+            <label>Keterangan</label>
+            <textarea id="item-note" rows="3" placeholder="Catatan tambahan..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="modal-cancel">Batal</button>
+          <button type="submit" class="btn btn-primary" id="modal-submit">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal View (Read) -->
+  <div class="modal-overlay" id="modal-view">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Detail Barang</h3>
+        <button class="modal-close" id="modal-view-close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-grid" id="view-content"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" id="view-qr-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          QR Code
+        </button>
+        <button type="button" class="btn btn-outline" id="view-edit-btn">Edit</button>
+        <button type="button" class="btn btn-primary" id="view-close-btn">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal QR Code Display -->
+  <div class="modal-overlay" id="modal-qr">
+    <div class="modal" style="max-width:380px;">
+      <div class="modal-header">
+        <h3>QR Code Barang</h3>
+        <button class="modal-close" id="modal-qr-close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="qr-display">
+          <div id="qrcode-canvas"></div>
+          <div class="qr-info">
+            <strong id="qr-item-name">-</strong>
+            <span id="qr-item-sku">-</span>
+          </div>
+          <p style="font-size:12px;color:var(--text-muted);text-align:center;">Scan QR ini untuk membuka detail barang di aplikasi</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" id="qr-download">Download QR</button>
+        <button type="button" class="btn btn-primary" id="qr-close-btn">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal QR Scanner -->
+  <div class="modal-overlay" id="modal-scanner">
+    <div class="modal" style="max-width:440px;">
+      <div class="modal-header">
+        <h3>Scan QR Code</h3>
+        <button class="modal-close" id="modal-scanner-close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="qr-reader"></div>
+        <div class="scanner-status" id="scanner-status">Memulai kamera...</div>
+        <p class="scanner-hint">Arahkan kamera ke QR Code barang. Pastikan izin kamera sudah diizinkan.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" id="scanner-stop">Tutup Scanner</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Confirm Delete -->
+  <div class="modal-overlay" id="modal-delete">
+    <div class="modal" style="max-width:400px;">
+      <div class="modal-header">
+        <h3>Hapus Barang?</h3>
+        <button class="modal-close" id="modal-delete-close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:14px;color:var(--text-muted);">Apakah Anda yakin ingin menghapus <strong id="delete-item-name"></strong>? Tindakan ini tidak dapat dibatalkan.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" id="delete-cancel">Batal</button>
+        <button type="button" class="btn btn-danger" id="delete-confirm">Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script>
+    // ==================== DATA & STATE ====================
+    const API_BASE = window.location.origin; // sama dengan server
+    const TOKEN_KEY = 'crusher_token';
+    const USER_KEY = 'crusher_user';
+    const NOTIF_KEY = 'crusher_notifications';
+
+    let items = [];
+    let notifications = [];
+    let editingId = null;
+    let deleteId = null;
+    let toastEnabled = true;
+    let currentUser = null;
+
+    // ==================== API HELPERS ====================
+    function getToken() {
+      return localStorage.getItem(TOKEN_KEY);
+    }
+
+    async function api(path, options = {}) {
+      const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+      const token = getToken();
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      const res = await fetch(API_BASE + path, { ...options, headers });
+      let data = null;
+      try { data = await res.json(); } catch (_) {}
+
+      if (res.status === 401) {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(USER_KEY);
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('login-page').style.display = 'flex';
+        throw new Error(data?.error || 'Sesi berakhir. Silakan login lagi.');
+      }
+      if (!res.ok) {
+        throw new Error(data?.error || 'Terjadi kesalahan server.');
+      }
+      return data;
+    }
+
+    // ==================== UTILS ====================
+    function formatRupiah(num) {
+      return 'Rp ' + Number(num).toLocaleString('id-ID');
+    }
+
+    function getStatus(qty) {
+      if (qty <= 0) return { label: 'Habis', class: 'badge-danger' };
+      if (qty <= 5) return { label: 'Stok Rendah', class: 'badge-warning' };
+      return { label: 'Tersedia', class: 'badge-success' };
+    }
+
+    function generateId() {
+      return Date.now() + Math.floor(Math.random() * 1000);
+    }
+
+    async function loadItems() {
+      items = await api('/api/items');
+    }
+
+    function saveNotifs() {
+      localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications));
+    }
+
+    function loadNotifs() {
+      const raw = localStorage.getItem(NOTIF_KEY);
+      notifications = raw ? JSON.parse(raw) : [];
+    }
+
+    function addNotification(title, message, type = 'info') {
+      const notif = {
+        id: generateId(),
+        title,
+        message,
+        type,
+        time: new Date().toLocaleString('id-ID'),
+        read: false
+      };
+      notifications.unshift(notif);
+      if (notifications.length > 50) notifications.pop();
+      saveNotifs();
+      updateNotifBadge();
+      renderNotifPanel();
+      renderNotifPage();
+    }
+
+    // ==================== TOAST ====================
+    function showToast(title, message, type = 'info') {
+      if (!toastEnabled) return;
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      const icons = {
+        success: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>',
+        error: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+        warning: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+        info: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+      };
+      toast.innerHTML = `
+        <div class="toast-icon">${icons[type] || icons.info}</div>
+        <div class="toast-content"><strong>${title}</strong><span>${message}</span></div>
+        <button class="toast-close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      `;
+      container.appendChild(toast);
+      toast.querySelector('.toast-close').onclick = () => toast.remove();
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(40px)';
+        toast.style.transition = 'all 0.3s';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // ==================== RENDER ====================
+    function updateStats() {
+      const total = items.length;
+      const totalStock = items.reduce((s, i) => s + Number(i.qty), 0);
+      const low = items.filter(i => i.qty > 0 && i.qty <= 5).length;
+      const value = items.reduce((s, i) => s + (Number(i.qty) * Number(i.price)), 0);
+
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-stock').textContent = totalStock.toLocaleString('id-ID');
+      document.getElementById('stat-low').textContent = low;
+      document.getElementById('stat-value').textContent = formatRupiah(value);
+    }
+
+    function renderRecent() {
+      const list = document.getElementById('recent-list');
+      const recent = [...items].sort((a, b) => b.id - a.id).slice(0, 5);
+      if (recent.length === 0) {
+        list.innerHTML = '<div class="empty-state" style="padding:30px;"><p>Belum ada data</p></div>';
+        return;
+      }
+      list.innerHTML = recent.map(item => {
+        const status = getStatus(item.qty);
+        return `
+          <div class="recent-item" onclick="viewItem(${item.id})">
+            <div class="avatar">${item.name.charAt(0).toUpperCase()}</div>
+            <div class="info">
+              <strong>${item.name}</strong>
+              <span>${item.category} • ${item.sku || '-'}</span>
+            </div>
+            <div class="qty ${item.qty <= 5 ? 'qty-low' : 'qty-ok'}">${item.qty} unit</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderTable(filtered = null) {
+      const data = filtered || items;
+      const tbody = document.getElementById('inventory-tbody');
+      const empty = document.getElementById('empty-state');
+
+      if (data.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      tbody.innerHTML = data.map(item => {
+        const status = getStatus(item.qty);
+        return `
+          <tr>
+            <td>
+              <div class="item-name">${item.name}</div>
+              <div class="item-sku">${item.sku || 'No SKU'}</div>
+            </td>
+            <td><span class="badge badge-info">${item.category}</span></td>
+            <td><span class="qty-badge ${item.qty <= 5 ? 'qty-low' : 'qty-ok'}">${item.qty}</span></td>
+            <td>${formatRupiah(item.price)}</td>
+            <td><span class="badge ${status.class}">${status.label}</span></td>
+            <td>
+              <div class="actions">
+                <button class="action-btn view" title="Lihat" onclick="viewItem(${item.id})">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="action-btn qr" title="QR Code" onclick="showQR(${item.id})">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h.01"/><path d="M17 14h.01"/><path d="M14 17h.01"/><path d="M21 14h.01"/><path d="M21 17h.01"/><path d="M14 21h.01"/><path d="M17 21h.01"/><path d="M21 21h.01"/></svg>
+                </button>
+                <button class="action-btn edit" title="Edit" onclick="editItem(${item.id})">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button class="action-btn delete" title="Hapus" onclick="confirmDelete(${item.id})">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function updateCategoryFilter() {
+      const select = document.getElementById('filter-category');
+      const cats = [...new Set(items.map(i => i.category))].sort();
+      const current = select.value;
+      select.innerHTML = '<option value="">Semua Kategori</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+      select.value = current;
+    }
+
+    function filterItems() {
+      const q = document.getElementById('search-input').value.toLowerCase().trim();
+      const cat = document.getElementById('filter-category').value;
+      const status = document.getElementById('filter-status').value;
+
+      let filtered = items.filter(item => {
+        const matchQ = !q || item.name.toLowerCase().includes(q) || (item.sku || '').toLowerCase().includes(q) || item.category.toLowerCase().includes(q);
+        const matchCat = !cat || item.category === cat;
+        const st = getStatus(item.qty).label;
+        const matchStatus = !status || st === status;
+        return matchQ && matchCat && matchStatus;
+      });
+      renderTable(filtered);
+    }
+
+    function updateNotifBadge() {
+      const unread = notifications.filter(n => !n.read).length;
+      const badge = document.getElementById('notif-badge');
+      badge.textContent = unread;
+      badge.style.display = unread > 0 ? 'flex' : 'none';
+    }
+
+    function renderNotifPanel() {
+      const list = document.getElementById('notif-list');
+      if (notifications.length === 0) {
+        list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-muted);font-size:13px;">Tidak ada notifikasi</div>';
+        return;
+      }
+      list.innerHTML = notifications.slice(0, 10).map(n => `
+        <div class="notif-item ${n.read ? '' : 'unread'}" onclick="markRead(${n.id})">
+          <div class="notif-icon" style="background:${n.type === 'success' ? 'var(--success-light)' : n.type === 'error' ? 'var(--danger-light)' : 'var(--primary-light)'};color:${n.type === 'success' ? 'var(--success)' : n.type === 'error' ? 'var(--danger)' : 'var(--primary)'}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </div>
+          <div class="notif-text">
+            <strong>${n.title}</strong>
+            <span>${n.message}</span>
+          </div>
+          <div class="notif-time">${n.time.split(',')[0]}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderNotifPage() {
+      const list = document.getElementById('notif-page-list');
+      if (notifications.length === 0) {
+        list.innerHTML = '<div class="empty-state"><h4>Tidak ada notifikasi</h4><p>Notifikasi akan muncul di sini.</p></div>';
+        return;
+      }
+      list.innerHTML = notifications.map(n => `
+        <div class="notif-item ${n.read ? '' : 'unread'}" style="border-radius:0;" onclick="markRead(${n.id})">
+          <div class="notif-icon" style="background:${n.type === 'success' ? 'var(--success-light)' : n.type === 'error' ? 'var(--danger-light)' : 'var(--primary-light)'};color:${n.type === 'success' ? 'var(--success)' : n.type === 'error' ? 'var(--danger)' : 'var(--primary)'}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+          </div>
+          <div class="notif-text">
+            <strong>${n.title}</strong>
+            <span>${n.message}</span>
+          </div>
+          <div class="notif-time">${n.time}</div>
+        </div>
+      `).join('');
+    }
+
+    function markRead(id) {
+      const n = notifications.find(x => x.id === id);
+      if (n) {
+        n.read = true;
+        saveNotifs();
+        updateNotifBadge();
+        renderNotifPanel();
+        renderNotifPage();
+      }
+    }
+
+    function refreshAll() {
+      updateStats();
+      renderRecent();
+      renderTable();
+      updateCategoryFilter();
+      updateNotifBadge();
+      renderNotifPanel();
+      renderNotifPage();
+    }
+
+    // ==================== CRUD ====================
+    function openModal(mode = 'create', id = null) {
+      const modal = document.getElementById('modal-form');
+      const title = document.getElementById('modal-title');
+      const form = document.getElementById('item-form');
+      form.reset();
+      editingId = null;
+
+      if (mode === 'edit' && id) {
+        const item = items.find(i => i.id === id);
+        if (!item) return;
+        editingId = id;
+        title.textContent = 'Edit Barang';
+        document.getElementById('item-id').value = item.id;
+        document.getElementById('item-name').value = item.name;
+        document.getElementById('item-sku').value = item.sku || '';
+        document.getElementById('item-category').value = item.category;
+        document.getElementById('item-qty').value = item.qty;
+        document.getElementById('item-price').value = item.price;
+        document.getElementById('item-location').value = item.location || '';
+        document.getElementById('item-note').value = item.note || '';
+      } else {
+        title.textContent = 'Tambah Barang';
+      }
+      modal.classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-form').classList.remove('show');
+      editingId = null;
+    }
+
+    function viewItem(id) {
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+      const status = getStatus(item.qty);
+      document.getElementById('view-content').innerHTML = `
+        <div class="detail-item"><span class="detail-label">Nama Barang</span><span class="detail-value">${item.name}</span></div>
+        <div class="detail-item"><span class="detail-label">SKU / Kode</span><span class="detail-value">${item.sku || '-'}</span></div>
+        <div class="detail-item"><span class="detail-label">Kategori</span><span class="detail-value"><span class="badge badge-info">${item.category}</span></span></div>
+        <div class="detail-item"><span class="detail-label">Jumlah Stok</span><span class="detail-value">${item.qty} unit</span></div>
+        <div class="detail-item"><span class="detail-label">Harga Satuan</span><span class="detail-value">${formatRupiah(item.price)}</span></div>
+        <div class="detail-item"><span class="detail-label">Total Nilai</span><span class="detail-value">${formatRupiah(item.qty * item.price)}</span></div>
+        <div class="detail-item"><span class="detail-label">Status</span><span class="detail-value"><span class="badge ${status.class}">${status.label}</span></span></div>
+        <div class="detail-item"><span class="detail-label">Lokasi</span><span class="detail-value">${item.location || '-'}</span></div>
+        <div class="detail-item"><span class="detail-label">Keterangan</span><span class="detail-value">${item.note || '-'}</span></div>
+        <div class="detail-item"><span class="detail-label">Ditambahkan</span><span class="detail-value">${item.created_at || '-'}</span></div>
+      `;
+      document.getElementById('view-edit-btn').onclick = () => {
+        closeView();
+        openModal('edit', id);
+      };
+      document.getElementById('view-qr-btn').onclick = () => {
+        closeView();
+        showQR(id);
+      };
+      document.getElementById('modal-view').classList.add('show');
+    }
+
+    function closeView() {
+      document.getElementById('modal-view').classList.remove('show');
+    }
+
+    // ==================== QR CODE ====================
+    let currentQRItem = null;
+    let html5QrCode = null;
+    let scannerRunning = false;
+
+    function getQRPayload(item) {
+      // Format: CRUSHER|id|sku  → mudah di-parse saat scan
+      return `CRUSHER|${item.id}|${item.sku || ''}`;
+    }
+
+    function showQR(id) {
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+      currentQRItem = item;
+
+      const container = document.getElementById('qrcode-canvas');
+      container.innerHTML = '';
+
+      document.getElementById('qr-item-name').textContent = item.name;
+      document.getElementById('qr-item-sku').textContent = item.sku ? `SKU: ${item.sku}` : `ID: ${item.id}`;
+
+      const payload = getQRPayload(item);
+
+      if (typeof QRCode !== 'undefined') {
+        QRCode.toCanvas(document.createElement('canvas'), payload, {
+          width: 220,
+          margin: 2,
+          color: { dark: '#0f172a', light: '#ffffff' }
+        }, (err, canvas) => {
+          if (err) {
+            container.innerHTML = '<p style="color:var(--danger)">Gagal generate QR</p>';
+            return;
+          }
+          canvas.style.borderRadius = '12px';
+          container.appendChild(canvas);
+        });
+      } else {
+        // Fallback: gunakan API online jika library belum load
+        const img = document.createElement('img');
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(payload)}`;
+        img.alt = 'QR Code';
+        img.style.borderRadius = '12px';
+        container.appendChild(img);
+      }
+
+      document.getElementById('modal-qr').classList.add('show');
+    }
+
+    function closeQR() {
+      document.getElementById('modal-qr').classList.remove('show');
+      currentQRItem = null;
+    }
+
+    function downloadQR() {
+      const canvas = document.querySelector('#qrcode-canvas canvas');
+      const img = document.querySelector('#qrcode-canvas img');
+      if (canvas) {
+        const link = document.createElement('a');
+        link.download = `QR-${currentQRItem?.sku || currentQRItem?.id || 'barang'}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        showToast('Download', 'QR Code berhasil diunduh', 'success');
+      } else if (img) {
+        const link = document.createElement('a');
+        link.download = `QR-${currentQRItem?.sku || currentQRItem?.id || 'barang'}.png`;
+        link.href = img.src;
+        link.target = '_blank';
+        link.click();
+      }
+    }
+
+    // ==================== QR SCANNER ====================
+    async function startScanner() {
+      const modal = document.getElementById('modal-scanner');
+      const statusEl = document.getElementById('scanner-status');
+      modal.classList.add('show');
+      statusEl.textContent = 'Memulai kamera...';
+      statusEl.style.color = 'var(--primary)';
+
+      // Pastikan library sudah tersedia
+      if (typeof Html5Qrcode === 'undefined') {
+        statusEl.textContent = 'Library scanner belum dimuat. Cek koneksi internet.';
+        statusEl.style.color = 'var(--danger)';
+        return;
+      }
+
+      // Stop dulu jika masih jalan
+      await stopScanner(false);
+
+      html5QrCode = new Html5Qrcode('qr-reader');
+
+      const config = {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+        aspectRatio: 1.0,
+        disableFlip: false
+      };
+
+      try {
+        // Coba kamera belakang dulu (environment)
+        await html5QrCode.start(
+          { facingMode: 'environment' },
+          config,
+          onScanSuccess,
+          onScanFailure
+        );
+        scannerRunning = true;
+        statusEl.textContent = 'Arahkan kamera ke QR Code...';
+        statusEl.style.color = 'var(--success)';
+      } catch (err) {
+        // Fallback ke kamera depan / any
+        try {
+          await html5QrCode.start(
+            { facingMode: 'user' },
+            config,
+            onScanSuccess,
+            onScanFailure
+          );
+          scannerRunning = true;
+          statusEl.textContent = 'Kamera depan aktif. Arahkan ke QR...';
+          statusEl.style.color = 'var(--warning)';
+        } catch (err2) {
+          statusEl.textContent = 'Gagal akses kamera. Izinkan kamera di browser.';
+          statusEl.style.color = 'var(--danger)';
+          console.error(err2);
+        }
+      }
+    }
+
+    function onScanSuccess(decodedText) {
+      // Hentikan scanner dulu agar tidak double-scan
+      stopScanner(true);
+
+      // Parse payload
+      let found = null;
+      if (decodedText.startsWith('CRUSHER|')) {
+        const parts = decodedText.split('|');
+        const id = Number(parts[1]);
+        found = items.find(i => i.id === id);
+        // fallback by SKU
+        if (!found && parts[2]) {
+          found = items.find(i => i.sku === parts[2]);
+        }
+      } else {
+        // Coba cocokkan dengan ID atau SKU langsung
+        const asId = Number(decodedText);
+        if (!isNaN(asId)) found = items.find(i => i.id === asId);
+        if (!found) found = items.find(i => i.sku === decodedText);
+      }
+
+      if (found) {
+        showToast('QR Ditemukan', found.name, 'success');
+        addNotification('QR Scan', `Berhasil scan: ${found.name}`, 'success');
+        setTimeout(() => viewItem(found.id), 300);
+      } else {
+        showToast('Tidak Ditemukan', 'QR Code tidak cocok dengan barang manapun', 'warning');
+        addNotification('QR Scan Gagal', `Kode tidak dikenali: ${decodedText.slice(0, 40)}`, 'error');
+      }
+    }
+
+    function onScanFailure(error) {
+      // biarkan silent (terlalu banyak log)
+    }
+
+    async function stopScanner(closeModal = true) {
+      if (html5QrCode && scannerRunning) {
+        try {
+          await html5QrCode.stop();
+          html5QrCode.clear();
+        } catch (e) { /* ignore */ }
+        scannerRunning = false;
+      }
+      html5QrCode = null;
+      if (closeModal) {
+        document.getElementById('modal-scanner').classList.remove('show');
+        document.getElementById('qr-reader').innerHTML = '';
+      }
+    }
+
+    function editItem(id) {
+      openModal('edit', id);
+    }
+
+    function confirmDelete(id) {
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+      deleteId = id;
+      document.getElementById('delete-item-name').textContent = item.name;
+      document.getElementById('modal-delete').classList.add('show');
+    }
+
+    async function doDelete() {
+      if (!deleteId) return;
+      const item = items.find(i => i.id === deleteId);
+      const name = item ? item.name : 'Barang';
+      try {
+        await api('/api/items/' + deleteId, { method: 'DELETE' });
+        addNotification('Barang Dihapus', `${name} berhasil dihapus dari inventaris.`, 'error');
+        showToast('Berhasil', `${name} telah dihapus`, 'success');
+        deleteId = null;
+        document.getElementById('modal-delete').classList.remove('show');
+        await loadItems();
+        refreshAll();
+      } catch (err) {
+        showToast('Gagal', err.message, 'error');
+      }
+    }
+
+    // ==================== NAVIGATION ====================
+    function navigateTo(page) {
+      document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('page-' + page).classList.add('active');
+      const nav = document.querySelector(`.nav-item[data-page="${page}"]`);
+      if (nav) nav.classList.add('active');
+
+      const titles = {
+        dashboard: 'Dashboard',
+        inventory: 'Inventaris',
+        notifications: 'Notifikasi',
+        settings: 'Pengaturan'
+      };
+      document.getElementById('page-title').textContent = titles[page] || page;
+
+      // Close mobile sidebar
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').classList.remove('show');
+    }
+
+    // ==================== EVENTS ====================
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('login-user').value.trim();
+      const password = document.getElementById('login-pass').value;
+      try {
+        const data = await api('/api/login', {
+          method: 'POST',
+          body: JSON.stringify({ username, password })
+        });
+        localStorage.setItem(TOKEN_KEY, data.token);
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+        currentUser = data.user;
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        const avatar = document.querySelector('.user-avatar');
+        if (avatar) avatar.textContent = (data.user.name || data.user.username || 'A').charAt(0).toUpperCase();
+        const nameEl = document.querySelector('.user-info .name');
+        if (nameEl) nameEl.textContent = data.user.name || data.user.username;
+        loadNotifs();
+        await loadItems();
+        refreshAll();
+        showToast('Selamat Datang!', 'Anda berhasil masuk ke Crusher', 'success');
+      } catch (err) {
+        showToast('Gagal', err.message, 'error');
+      }
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+      currentUser = null;
+      items = [];
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('login-page').style.display = 'flex';
+      document.getElementById('login-user').value = '';
+      document.getElementById('login-pass').value = '';
+    });
+
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.addEventListener('click', () => navigateTo(btn.dataset.page));
+    });
+
+    document.getElementById('menu-toggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebar-overlay').classList.toggle('show');
+    });
+
+    document.getElementById('sidebar-overlay').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').classList.remove('show');
+    });
+
+    document.getElementById('btn-add-item').addEventListener('click', () => openModal('create'));
+    document.getElementById('btn-scan-qr').addEventListener('click', () => startScanner());
+
+    // QR Modal events
+    document.getElementById('modal-qr-close').addEventListener('click', closeQR);
+    document.getElementById('qr-close-btn').addEventListener('click', closeQR);
+    document.getElementById('qr-download').addEventListener('click', downloadQR);
+    document.getElementById('modal-qr').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('modal-qr')) closeQR();
+    });
+
+    // Scanner Modal events
+    document.getElementById('modal-scanner-close').addEventListener('click', () => stopScanner(true));
+    document.getElementById('scanner-stop').addEventListener('click', () => stopScanner(true));
+    document.getElementById('modal-scanner').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('modal-scanner')) stopScanner(true);
+    });
+
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    document.getElementById('modal-cancel').addEventListener('click', closeModal);
+    document.getElementById('modal-form').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('modal-form')) closeModal();
+    });
+
+    document.getElementById('item-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        name: document.getElementById('item-name').value.trim(),
+        sku: document.getElementById('item-sku').value.trim(),
+        category: document.getElementById('item-category').value,
+        qty: Number(document.getElementById('item-qty').value),
+        price: Number(document.getElementById('item-price').value),
+        location: document.getElementById('item-location').value.trim(),
+        note: document.getElementById('item-note').value.trim(),
+      };
+
+      // Harga & stok boleh 0
+      if (isNaN(data.qty) || data.qty < 0) {
+        showToast('Validasi', 'Stok harus angka ≥ 0', 'warning');
+        return;
+      }
+      if (isNaN(data.price) || data.price < 0) {
+        showToast('Validasi', 'Harga harus angka ≥ 0', 'warning');
+        return;
+      }
+
+      try {
+        if (editingId) {
+          await api('/api/items/' + editingId, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+          });
+          addNotification('Barang Diperbarui', `${data.name} berhasil diperbarui.`, 'info');
+          showToast('Berhasil', 'Barang berhasil diperbarui', 'success');
+        } else {
+          await api('/api/items', {
+            method: 'POST',
+            body: JSON.stringify(data)
+          });
+          addNotification('Barang Baru', `${data.name} ditambahkan ke inventaris.`, 'success');
+          showToast('Berhasil', 'Barang baru berhasil ditambahkan', 'success');
+        }
+        closeModal();
+        await loadItems();
+        refreshAll();
+        navigateTo('inventory');
+      } catch (err) {
+        showToast('Gagal', err.message, 'error');
+      }
+    });
+
+    document.getElementById('modal-view-close').addEventListener('click', closeView);
+    document.getElementById('view-close-btn').addEventListener('click', closeView);
+    document.getElementById('modal-view').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('modal-view')) closeView();
+    });
+
+    document.getElementById('modal-delete-close').addEventListener('click', () => {
+      document.getElementById('modal-delete').classList.remove('show');
+    });
+    document.getElementById('delete-cancel').addEventListener('click', () => {
+      document.getElementById('modal-delete').classList.remove('show');
+    });
+    document.getElementById('delete-confirm').addEventListener('click', doDelete);
+    document.getElementById('modal-delete').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('modal-delete')) {
+        document.getElementById('modal-delete').classList.remove('show');
+      }
+    });
+
+    document.getElementById('search-input').addEventListener('input', filterItems);
+    document.getElementById('filter-category').addEventListener('change', filterItems);
+    document.getElementById('filter-status').addEventListener('change', filterItems);
+
+    // Notif panel
+    document.getElementById('notif-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('notif-panel').classList.toggle('show');
+    });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#notif-btn') && !e.target.closest('#notif-panel')) {
+        document.getElementById('notif-panel').classList.remove('show');
+      }
+    });
+    document.getElementById('clear-notif').addEventListener('click', () => {
+      notifications = [];
+      saveNotifs();
+      updateNotifBadge();
+      renderNotifPanel();
+      renderNotifPage();
+      showToast('Info', 'Semua notifikasi dihapus', 'info');
+    });
+    document.getElementById('clear-all-notif-page').addEventListener('click', () => {
+      notifications = [];
+      saveNotifs();
+      updateNotifBadge();
+      renderNotifPanel();
+      renderNotifPage();
+      showToast('Info', 'Semua notifikasi dihapus', 'info');
+    });
+
+    // Settings
+    document.getElementById('toggle-toast').addEventListener('click', function() {
+      this.classList.toggle('active');
+      toastEnabled = this.classList.contains('active');
+    });
+    document.getElementById('toggle-dark').addEventListener('click', function() {
+      this.classList.toggle('active');
+      const isDark = this.classList.contains('active');
+      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      localStorage.setItem('crusher_theme', isDark ? 'dark' : 'light');
+      showToast(isDark ? 'Mode Gelap' : 'Mode Terang', isDark ? 'Tema gelap diaktifkan' : 'Tema terang diaktifkan', 'info');
+    });
+    document.getElementById('btn-reset-data').addEventListener('click', () => {
+      showToast('Info', 'Data disimpan di server SQLite. Hapus file crusher.db lalu restart server untuk reset.', 'info');
+    });
+    document.getElementById('btn-export').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'crusher-inventory-' + new Date().toISOString().slice(0, 10) + '.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Export', 'Data berhasil diexport', 'success');
+    });
+
+    // ==================== INIT ====================
+    (async function init() {
+      // Load theme preference
+      const savedTheme = localStorage.getItem('crusher_theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      if (savedTheme === 'dark') {
+        const darkToggle = document.getElementById('toggle-dark');
+        if (darkToggle) darkToggle.classList.add('active');
+      }
+
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (token) {
+        try {
+          currentUser = await api('/api/me');
+          localStorage.setItem(USER_KEY, JSON.stringify(currentUser));
+          document.getElementById('login-page').style.display = 'none';
+          document.getElementById('app').style.display = 'block';
+          const avatar = document.querySelector('.user-avatar');
+          if (avatar) avatar.textContent = (currentUser.name || currentUser.username || 'A').charAt(0).toUpperCase();
+          const nameEl = document.querySelector('.user-info .name');
+          if (nameEl) nameEl.textContent = currentUser.name || currentUser.username;
+          loadNotifs();
+          await loadItems();
+          refreshAll();
+        } catch (_) {
+          localStorage.removeItem(TOKEN_KEY);
+          localStorage.removeItem(USER_KEY);
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
