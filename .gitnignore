@@ -1,0 +1,5 @@
+node_modules/
+crusher.db
+crusher.db-*
+*.local.html.bak
+.DS_Store
